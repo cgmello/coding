@@ -1,0 +1,87 @@
+package main
+
+import (
+	"fmt"
+	"os"
+	"runtime"
+	"time"
+)
+
+var filename string = "GeeksforGeeks.txt"
+
+func saveDataToFile(bChan chan []byte, doneChan chan int, errChan chan error) {
+	// open file
+	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		errChan <- err
+		return
+	}
+
+	errChan <- nil
+
+	for {
+		// var data []byte
+		select {
+		case data := <-bChan:
+			// _, err := f.WriteString(string(data))
+			_, err := f.Write(data)
+			if err != nil {
+				errChan <- err
+				return
+			}
+			errChan <- nil
+		case <-doneChan:
+			f.Close()
+			return
+		}
+	}
+}
+
+func main() {
+	// data := [][]byte{
+	// 	[]byte("hello"),
+	// 	[]byte("world"),
+	// 	[]byte("baby yoda"),
+	// }
+
+	var data2 = make([][]byte, 1000)
+	for i := 1; i <= 1000; i++ {
+		data2 = append(data2, []byte("[38/40]"))
+	}
+
+	b := make(chan []byte)
+	done := make(chan int)
+	errChannel := make(chan error)
+
+	defer close(b)
+	defer close(done)
+	defer close(errChannel)
+
+	var ms runtime.MemStats
+	runtime.ReadMemStats(&ms)
+	allocBefore := ms.Alloc
+
+	go saveDataToFile(b, done, errChannel)
+
+	err := <-errChannel
+	if err != nil {
+		panic(err)
+	}
+
+	for _, d := range data2 {
+		b <- d
+
+		err := <-errChannel
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	done <- 1
+
+	runtime.ReadMemStats(&ms)
+	allocAfter := ms.Alloc
+	fmt.Printf("Total memory allocated: %d bytes\n", allocAfter-allocBefore)
+
+	time.Sleep(time.Second * 1)
+}

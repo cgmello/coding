@@ -18,11 +18,11 @@ class Node:
 
 """
     Huffman algorithm
-    Huffman coding is a lossless data compression algorithm. 
-    In this algorithm, a variable-length code is assigned to input different characters. 
-    The code length is related to how frequently characters are used. 
+    Huffman coding is a lossless data compression algorithm.
+    In this algorithm, a variable-length code is assigned to input different characters.
+    The code length is related to how frequently characters are used.
     Most frequent characters have the smallest codes and longer codes for least frequent characters.
-    There are mainly two parts. 
+    There are mainly two parts.
     First one to create a Huffman tree, and another one to traverse the tree to find codes.
 """
 class Huffman:
@@ -45,8 +45,8 @@ class Huffman:
 
         # convert the nodes in a priority heap queue
         heapify(nodes)
-        
-        # create the tree connecting nodes 
+
+        # create the tree connecting nodes
         # until there is only one... (the root) - Highlander ;-D
         while len(nodes) > 1:
             # connect 2 small nodes
@@ -55,7 +55,7 @@ class Huffman:
             newNode = Node(left.frequency + right.frequency)
             newNode.left = left
             newNode.right = right
-            
+
             # push back to queue
             heappush(nodes, newNode)
 

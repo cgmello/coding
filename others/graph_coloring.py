@@ -11,7 +11,7 @@ neighbors['Kerala'] = ['Karnataka', 'TamilNadu']
 colors_of_states = {}
 
 def free_color(state, color):
-    for neighbor in neighbors.get(state): 
+    for neighbor in neighbors.get(state):
         color_of_neighbor = colors_of_states.get(neighbor)
         if color_of_neighbor == color:
             return False

@@ -15,11 +15,11 @@ def graphColoring(graph, m, i, color):
                 print(color[i],end=" ")
             return True
         return False
- 
+
     # Assign each color from 1 to m
     for j in range(1, m + 1):
         color[i] = j
- 
+
         # Recur of the rest vertices
         if (graphColoring(graph, m, i + 1, color)):
             return True
